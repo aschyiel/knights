@@ -45,5 +45,13 @@ public class SolutionTest
     assertTrue( a == subject.undo() ); 
     assertTrue( 1 == subject.getStep() );
   }
+  
+  @Test
+  public void testPrint()
+  {
+    subject.move( a, b );
+    subject.print();
+    assertTrue( true );
+  }
 
 }

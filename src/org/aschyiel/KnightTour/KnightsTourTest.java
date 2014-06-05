@@ -23,10 +23,10 @@ public class KnightsTourTest
   {
   }
   
-//  @Test
+  @Test
   public void testSolve()
   {
-    Solution soln = game.solve();
+    Solution soln = (new KnightsTour()).solve();
     assertTrue( soln != null );
   }
   

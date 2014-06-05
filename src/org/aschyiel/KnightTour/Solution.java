@@ -2,6 +2,7 @@ package org.aschyiel.KnightTour;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Iterator;
 
 public class Solution
 {
@@ -61,9 +62,10 @@ public class Solution
    */
   public void print()
   {
-    for ( Move it : moves )
+    Iterator<Move> it = moves.descendingIterator();
+    while ( it.hasNext() )
     {
-      System.out.println( it );
+      System.out.println( it.next() );
     }
   }
   

@@ -22,12 +22,17 @@ public class KnightsTour
   {
     Solution soln = new Solution( board.getDimensions() );
     
-    int maxTries = 9999;
-    int step = 0;
+    int maxTries = 9999999;
+    int attempts = 0;
     Square current = origin;
     current.markAsOrigin();
-    while ( soln.getStep() < soln.getMaxMoves() && step++ < maxTries )
+    while ( soln.getStep() < soln.getMaxMoves() )
     { 
+      if ( attempts++ > maxTries )
+      {
+        System.out.println( "WARNING:Too many attempts, we're doing it wrong." );
+        break;
+      }
       Square prev = null;
       int i = random( current.getUnvisitedNeighborsSize() );
       if ( -1 == i )
@@ -46,7 +51,12 @@ public class KnightsTour
         }
 
         soln.move( current, next );
-        if ( !next.isValidLastMove() && next.hasOrphanedNeighbors() )
+        if ( next.isValidLastMove() && soln.getStep() == soln.getMaxMoves() - 1 )
+        {
+          soln.move( next, origin );
+          break;
+        }
+        else if ( next.hasOrphanedNeighbors() )
         {
           prev = soln.undo();
         }

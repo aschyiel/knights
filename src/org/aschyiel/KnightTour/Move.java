@@ -21,7 +21,7 @@ public final class Move
   @Override
   public String toString()
   {
-    return String.format( "Step%2$d: Move from %s to %s.", step, from, to );
+    return String.format( "Step%02d: Move from %s to %s.", step, from, to );
   }
   
   /**
