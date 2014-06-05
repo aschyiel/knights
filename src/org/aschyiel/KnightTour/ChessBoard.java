@@ -10,6 +10,11 @@ public class ChessBoard
     board = new Square[n][n];
     fillBoard();
   }
+  
+  public int getDimensions()
+  {
+    return dimensions;
+  }
 
   private Square[][] board;
   

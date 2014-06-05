@@ -2,6 +2,9 @@ package org.aschyiel.KnightTour;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +22,45 @@ public class KnightsTourTest
   public void tearDown() throws Exception
   {
   }
+  
+  @Test
+  public void testRandom()
+  {
+    Map<Integer, Boolean> xi = new HashMap<Integer, Boolean>();
+    Integer it;
+    int choices = 3;
+    int maxTries = 99;
+    int tries = 0;
+    // There has GOT to be a better way of mocking this up...
+    while ( tries < maxTries )
+    {
+      tries++;
+      it = game.random( choices );
+      if ( -1 == it )
+      {
+        xi.put( -1, true );
+      }
+      else if ( 0 == it )
+      {
+        xi.put( 0, true );
+      }
+      else if ( 1 == it )
+      {
+        xi.put( 1, true );
+      }
+      else if ( 2 == it )
+      {
+        xi.put( 2, true );
+      }
+    }
+    
+    assertTrue( xi.get( -1 ) );
+    assertTrue( xi.get(  0 ) );
+    assertTrue( xi.get(  1 ) );
+    assertTrue( xi.get(  2 ) );
+    assertTrue( null == xi.get(  3 ) );
+    assertTrue( null == xi.get( -2 ) );
+  } 
 
   @Test
   public void testChessBoardVertices()
