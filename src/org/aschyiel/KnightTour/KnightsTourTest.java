@@ -23,6 +23,49 @@ public class KnightsTourTest
   {
   }
   
+//  @Test
+  public void testSolve()
+  {
+    Solution soln = game.solve();
+    assertTrue( soln != null );
+  }
+  
+  @Test
+  public void integrationTestOfBasicGameConcepts()
+  {
+    int n = 5;
+    ChessBoard mini = game.makeChessBoardGraph( n );
+    Solution soln = new Solution( n );
+    Square a1 = mini.getSquare( 0, 0 );
+    assertEquals( "A1", a1.toString() );
+    a1.markAsOrigin();
+    assertTrue( 2 == a1.getUnvisitedNeighborsSize() );    // C2, B3.
+    
+    // Let's say we move to C2 from A1.
+    Square c2 = mini.getSquare( 2, 1 );
+    soln.move( a1, c2 );
+
+    // A3, B4, D4, E1, and E3.
+    // NOTE: A1 is excluded because we've already marked it as the origin.
+    assertEquals( "C2", c2.toString() );
+    assertTrue( 5 ==  c2.getUnvisitedNeighborsSize() );
+
+    Square[] li = c2.getUnvisitedNeighbors();
+    assertTrue( li.length == 5 );
+    
+    // Now let's say we want to move to B4 from C2.
+    Square b4 = mini.getSquare( 1, 3 );
+    soln.move( c2, b4 );
+    assertEquals( "B4", b4.toString() );
+    
+    // A2, C2, D3, D5, however C2 has already been visited.
+    assertTrue( 3 == b4.getUnvisitedNeighborsSize() );
+    assertTrue( 3 == b4.getUnvisitedNeighbors().length );
+    assertTrue( null != b4.getUnvisitedNeighbors()[0] );
+    assertTrue( null != b4.getUnvisitedNeighbors()[1] );
+    assertTrue( null != b4.getUnvisitedNeighbors()[2] );
+  }
+  
   @Test
   public void testRandom()
   {

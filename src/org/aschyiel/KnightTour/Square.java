@@ -72,7 +72,6 @@ public class Square
   public void markAsVisited()
   {
     visited = true;
-    unvisitedNeighborsSize--;
     for ( Square neighbor : neighbors )
     {
       neighbor.unvisitedNeighborsSize--;
@@ -82,10 +81,63 @@ public class Square
   public void remarkAsUnvisited()
   {
     visited = false;
-    unvisitedNeighborsSize++;
     for ( Square neighbor : neighbors )
     {
       neighbor.unvisitedNeighborsSize++;
     }
+  }
+
+  public Square[] getUnvisitedNeighbors()
+  {
+    Square[] li = new Square[unvisitedNeighborsSize]; 
+    int idx = 0;
+    for ( Square them : neighbors )
+    {
+      if ( them.isUnvisited() )
+      {
+        li[idx++] = them;
+      }
+    }
+    return li;
+  }
+  
+  public boolean isOrigin()
+  {
+    return origin;
+  }
+  
+  private boolean origin = false;
+  
+  private boolean isValidLastMove = false;
+  
+  public boolean isValidLastMove()
+  {
+    return isValidLastMove;
+  }
+  
+  public void markAsOrigin()
+  {
+    origin = true;
+    markAsVisited();
+    for ( Square it : neighbors )
+    {
+      it.isValidLastMove = true;
+    }
+  }
+
+  /**
+   * Returns true if any of the surrounding neighbors is now unreachable;
+   * After we've visited here.
+   */
+  public boolean hasOrphanedNeighbors()
+  {
+    for ( Square them : neighbors )
+    {
+      if ( them.getUnvisitedNeighborsSize() < 1 )
+      {
+        return true;
+      }
+    }
+    return false;
   }
 }

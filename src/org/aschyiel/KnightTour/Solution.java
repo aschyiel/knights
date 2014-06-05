@@ -42,14 +42,16 @@ public class Solution
   
   /**
    * Undoes the last move, and returns the previous Square.
+   * 
+   * Safely ignores invalid undos.
    */
   public Square undo()
   {
-    Move prev = moves.pop();
-    if ( null == prev )
+    if ( moves.size() < 1 )
     {
       return null;
     }
+    Move prev = moves.pop();
     prev.getTo().remarkAsUnvisited();
     return prev.getFrom();
   }

@@ -22,12 +22,43 @@ public class KnightsTour
   {
     Solution soln = new Solution( board.getDimensions() );
     
+    int maxTries = 9999;
+    int step = 0;
     Square current = origin;
-    while ( soln.getStep() < soln.getMaxMoves() )
+    current.markAsOrigin();
+    while ( soln.getStep() < soln.getMaxMoves() && step++ < maxTries )
     { 
+      Square prev = null;
       int i = random( current.getUnvisitedNeighborsSize() );
-      boolean isUndo = -1 == i;
-//      Square next = 
+      if ( -1 == i )
+      {
+        prev = soln.undo(); 
+      }
+      else
+      {
+        Square[] li = current.getUnvisitedNeighbors();
+        Square next = li[i];
+        
+        // Don't short-circuit.
+        if ( next.isOrigin() && soln.getStep() + 1 < soln.getMaxMoves() )
+        {
+          continue;
+        }
+
+        soln.move( current, next );
+        if ( !next.isValidLastMove() && next.hasOrphanedNeighbors() )
+        {
+          prev = soln.undo();
+        }
+        else
+        {
+          current = next;
+        }
+      }
+      if ( null != prev )
+      {
+        current = prev;
+      }
     } 
     
     soln.print();
@@ -57,7 +88,7 @@ public class KnightsTour
   /**
    * Builds up a chess-board for the knight's tour.
    */
-  private ChessBoard makeChessBoardGraph( int n )
+  protected ChessBoard makeChessBoardGraph( int n )
   {
     ChessBoard board = new ChessBoard( n );
     
