@@ -1,14 +1,14 @@
 package org.aschyiel.KnightTour;
 
-import java.util.ArrayDeque;
+import java.util.ArrayDeque; 
 import java.util.Deque;
-import java.util.Iterator;
+import java.util.Iterator; 
 
 public class Solution
 {
-  public Solution( int dimensions )
+  public Solution( int m, int n )
   {
-    maxMoves = dimensions * dimensions;
+    maxMoves = m * n;
     moves = new ArrayDeque<Move>( maxMoves );
   }
 
@@ -38,7 +38,7 @@ public class Solution
   public void move( Square a, Square b )
   {
     moves.push( new Move( getStep(), a, b ) );
-//    System.out.println( "move: "+ moves.peek().toString() );
+    KnightsTour.debug( "move: "+ moves.peek().toString() );
     b.markAsVisited();
   }
   
@@ -54,7 +54,7 @@ public class Solution
       return null;
     }
     Move prev = moves.pop();
-//    System.out.println( "undo: "+ prev.toString() );
+    KnightsTour.debug( "undo: "+ prev.toString() );
     prev.getTo().remarkAsUnvisited();
     return prev.getFrom();
   }

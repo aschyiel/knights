@@ -17,7 +17,7 @@ public class SolutionTest
   @Before
   public void setUp() throws Exception
   {
-    subject = new Solution( dimensions );
+    subject = new Solution( dimensions, dimensions );
     a = new Square( "a" );
     b = new Square( "b" );
     c = new Square( "c" );

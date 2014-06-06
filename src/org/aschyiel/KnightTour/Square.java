@@ -135,7 +135,7 @@ public class Square
     {
       if ( them.isUnvisited() && them.getUnvisitedNeighborsSize() < 1 )
       {
-//        System.out.println( this.toString() + " has orphaned-neighbor:" + them.toString() );
+        KnightsTour.debug( this.toString() + " has orphaned-neighbor:" + them.toString() );
         return true;
       }
     }
@@ -149,5 +149,20 @@ public class Square
   {
     return ( isValidLastMove() )?
         false : getUnvisitedNeighborsSize() < 1;
+  }
+
+  /**
+   * Returns true if we're adjacent to the other square.
+   */
+  public boolean neighborsWith( Square them )
+  {
+    for ( Square it : neighbors )
+    {
+      if ( it == them )
+      {
+        return true;
+      }
+    }
+    return false;
   }
 }

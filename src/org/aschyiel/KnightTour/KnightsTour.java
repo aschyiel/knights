@@ -12,6 +12,11 @@ public class KnightsTour
    * Usually, chess-boards are gonna be 8x8 = 64 squares.
    */
   public final static int DEFAULT_DIMENSIONS = 8;
+
+  /**
+   * Flag to enable annoying debugging messages.
+   */
+  public static final boolean DEBUG = false;
   
   public KnightsTour()
   {
@@ -26,51 +31,68 @@ public class KnightsTour
   protected Map<String, Map<String, Boolean>> attempted; 
 
   /**
-   * Attempt to tour from the origin to the destination.
+   * Attempt to tour from the origin to the destination within a section.
    * 
    * If the origin and destination squares are different,
    * it is considered an "open" tour, otherwise it's "closed".
    */
-  public Solution solve( Square origin, Square destination, ChessBoardSection section )
+  public Solution solveSection( Square origin,
+                                Square destination,
+                                ChessBoardSection section )
   { 
-    Solution soln = new Solution( section.getRowCount() * section.getColumnCount() );
+    int m = section.getRowCount();
+    int n = section.getColumnCount();
+    Solution soln = new Solution( m, n );
     
-    int maxTries = 999;
+//    int maxTries = m * n * 3;
+    int maxTries = 199;
     int attempts = 0;
     Square current = origin;
     current.markAsOrigin();
     while ( soln.getStep() < soln.getMaxMoves() )
-    {
-      
+    { 
       if ( attempts++ > maxTries )
       {
         System.out.println( "WARNING:Too many attempts, "+
             "we're probably doing it wrong." );
         break;
       }
-      Square prev = null;
-      Square[] unvisited = current.getUnvisitedNeighbors();
-
+      
+      Square prev = null; 
+      Square[] unvisited = current.getUnvisitedNeighbors(); 
       boolean exausted = hasExausted( current, unvisited );
       Square next = ( exausted )? null : getRandomUnvisitedNeighbor( current, unvisited ); 
 
-      if ( null != next && next.isDeadEnd() )
+      boolean isLastMove = soln.getStep() + 2 == soln.getMaxMoves();
+      if ( null != next )
       {
-        attempt( current, next );
-        continue;
-      }
+        if ( !isLastMove && next == destination )
+        {
+          attempt( current, next );
+          continue;
+        } 
+        if ( next.isDeadEnd() )
+        {
+          attempt( current, next );
+          continue;
+        }
+      } 
       
       if ( exausted )
       {
         // We ran out of stuff to try at this level.
-//        System.out.println( "Exausted:"+ current.toString() ); 
-        resetAttempts( current );
-        prev = soln.undo(); 
+        debug( "Exausted:"+ current.toString() ); 
+//        resetAttempts( current );
         prev = soln.undo(); 
       }
       else if ( null != next && !hasTried( current, next ) )
       { 
         soln.move( current, next ); 
+        if ( isLastMove && next.neighborsWith( destination ) )
+        {
+          soln.move( next, destination );
+          break;    // We found a solution.
+        } 
         attempt( current, next ); 
         if ( next.hasOrphanedNeighbors() )
         {
@@ -80,7 +102,13 @@ public class KnightsTour
         {
           current = next;
         }
-      } 
+      }
+      
+      if ( !isLastMove && destination.isDeadEnd() )
+      {
+        debug( "Accidentally blocked off destination." );
+        prev = soln.undo();
+      }
       
       if ( null != prev )
       {
@@ -176,4 +204,12 @@ public class KnightsTour
     } 
     return board;
   } 
+  
+  public static void debug( String msg )
+  {
+    if ( DEBUG )
+    {
+      System.out.println( msg );
+    }
+  }
 }

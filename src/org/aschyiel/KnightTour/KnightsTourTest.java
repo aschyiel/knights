@@ -24,11 +24,28 @@ public class KnightsTourTest
   {
   }
   
-//  @Test
-  public void testSolve()
+  /**
+   * Here's a known solution for a 3x4 section.
+   * 
+   * [  1 ][ 12 ][  3 ]
+   * [  4 ][  9 ][  6 ]
+   * [  7 ][  2 ][ 11 ]
+   * [ 10 ][  5 ][  8 ]
+   */
+  @Test
+  public void testSolveBasic3x4Section()
   {
-//    Solution soln = ( new KnightsTour( 4, 5 ) ).solve();
-//    assertTrue( soln != null );
+    int m = 4;
+    int n = 3;
+    KnightsTour caty = new KnightsTour( m, n );
+    ChessBoardSection section = new ChessBoardSection(
+        caty.board, 0, 0, m, n ); 
+    Square src = section.getSquare( 0, 0 );
+    Square dst = section.getSquare( 0, 1 );
+    assertEquals( "A1", src.toString() );
+    assertEquals( "A2", dst.toString() );
+    Solution soln = caty.solveSection( src, dst, section );
+    assertTrue( soln != null );
   }
   
   @Test
@@ -36,7 +53,7 @@ public class KnightsTourTest
   {
     int n = 5;
     ChessBoardSection mini = new ChessBoardSection( game.makeChessBoardGraph( n, n ), 0, 0, n, n );
-    Solution soln = new Solution( n );
+    Solution soln = new Solution( n, n );
     Square a1 = mini.getSquare( 0, 0 );
     assertEquals( "A1", a1.toString() );
     a1.markAsOrigin();

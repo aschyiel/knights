@@ -49,8 +49,8 @@ public class ChessBoardSection
   */
   private void setupEdgesWithinSection()
   { 
-    int m = y + h;
-    int n = x + w;
+    int n = y + h;
+    int m = x + w;
     for ( int i = y; i < m; i++ )
     for ( int j = x; j < n; j++ )
     {
