@@ -130,14 +130,24 @@ public class Square
    * After we've visited here.
    */
   public boolean hasOrphanedNeighbors()
-  {
+  { 
     for ( Square them : neighbors )
     {
-      if ( them.getUnvisitedNeighborsSize() < 1 )
+      if ( them.isUnvisited() && them.getUnvisitedNeighborsSize() < 1 )
       {
+//        System.out.println( this.toString() + " has orphaned-neighbor:" + them.toString() );
         return true;
       }
     }
     return false;
+  }
+
+  /**
+   * Returns true if there is no where else to go from here.
+   */
+  public boolean isDeadEnd()
+  {
+    return ( isValidLastMove() )?
+        false : getUnvisitedNeighborsSize() < 1;
   }
 }

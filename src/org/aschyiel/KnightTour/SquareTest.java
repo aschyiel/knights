@@ -16,6 +16,16 @@ public class SquareTest
   @Before
   public void setUp() throws Exception
   {
+    
+    //
+    //
+    //         a---c
+    //        / \
+    //       /   \
+    // subject----b
+    //
+    // 
+    
     subject = new Square( "subject" );
     a = new Square( "a" );
     b = new Square( "b" );
@@ -64,7 +74,7 @@ public class SquareTest
     assertTrue( b.isUnvisited() );
     assertTrue( c.isUnvisited() );
 
-    assertTrue( n  - 1 == subject.getUnvisitedNeighborsSize() );
+    assertTrue( n      == subject.getUnvisitedNeighborsSize() );
     assertTrue( na - 1 == a      .getUnvisitedNeighborsSize() );
     assertTrue( nb - 1 == b      .getUnvisitedNeighborsSize() );
     assertTrue( nc     == c      .getUnvisitedNeighborsSize() ); 
@@ -104,4 +114,29 @@ public class SquareTest
     assertTrue( a.hasOrphanedNeighbors() );    // Aka "C" is now unreachable. 
   }
 
+  @Test
+  public void testIsDeadEnd()
+  {
+    //
+    //       d
+    //      / \
+    // c---b---a
+    //
+    //
+    Square a = new Square( "a" );
+    Square b = new Square( "b" );
+    Square c = new Square( "c" );
+    Square d = new Square( "d" );
+    a.addNeighbor( b );
+    a.addNeighbor( d );
+    b.addNeighbor( a );
+    b.addNeighbor( d );
+    b.addNeighbor( c );
+    d.addNeighbor( a );
+    d.addNeighbor( b );
+    c.addNeighbor( b ); 
+    b.markAsVisited();
+    assertTrue( c.isDeadEnd() );
+    assertFalse( b.isDeadEnd() );
+  }
 }

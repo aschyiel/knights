@@ -11,11 +11,12 @@ import org.junit.Test;
 
 public class KnightsTourTest
 {
-  private KnightsTour game = new KnightsTour();
+  private KnightsTour game;
 
   @Before
   public void setUp() throws Exception
   {
+    game = new KnightsTour();
   }
 
   @After
@@ -26,7 +27,7 @@ public class KnightsTourTest
   @Test
   public void testSolve()
   {
-    Solution soln = (new KnightsTour()).solve();
+    Solution soln = ( new KnightsTour( 4, 5 ) ).solve();
     assertTrue( soln != null );
   }
   
@@ -34,7 +35,7 @@ public class KnightsTourTest
   public void integrationTestOfBasicGameConcepts()
   {
     int n = 5;
-    ChessBoard mini = game.makeChessBoardGraph( n );
+    ChessBoard mini = game.makeChessBoardGraph( n, n );
     Solution soln = new Solution( n );
     Square a1 = mini.getSquare( 0, 0 );
     assertEquals( "A1", a1.toString() );
@@ -64,7 +65,7 @@ public class KnightsTourTest
     assertTrue( null != b4.getUnvisitedNeighbors()[0] );
     assertTrue( null != b4.getUnvisitedNeighbors()[1] );
     assertTrue( null != b4.getUnvisitedNeighbors()[2] );
-  }
+  } 
   
   @Test
   public void testRandom()
@@ -79,11 +80,7 @@ public class KnightsTourTest
     {
       tries++;
       it = game.random( choices );
-      if ( -1 == it )
-      {
-        xi.put( -1, true );
-      }
-      else if ( 0 == it )
+      if ( 0 == it )
       {
         xi.put( 0, true );
       }
@@ -97,12 +94,11 @@ public class KnightsTourTest
       }
     }
     
-    assertTrue( xi.get( -1 ) );
     assertTrue( xi.get(  0 ) );
     assertTrue( xi.get(  1 ) );
     assertTrue( xi.get(  2 ) );
     assertTrue( null == xi.get(  3 ) );
-    assertTrue( null == xi.get( -2 ) );
+    assertTrue( null == xi.get( -1 ) );
   } 
 
   @Test

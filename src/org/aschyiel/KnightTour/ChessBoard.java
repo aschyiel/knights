@@ -2,19 +2,19 @@ package org.aschyiel.KnightTour;
 
 public class ChessBoard
 {
-  private int dimensions = -1;
+  /** aka m */
+  private final Integer rows;
 
-  public ChessBoard( int n )
+  /** aka n */
+  private final Integer columns;
+
+  public ChessBoard( int m, int n )
   {
-    dimensions = n;
-    board = new Square[n][n];
+    rows    = m;
+    columns = n;
+    board = new Square[m][n];
     fillBoard();
-  }
-  
-  public int getDimensions()
-  {
-    return dimensions;
-  }
+  } 
 
   private Square[][] board;
   
@@ -28,8 +28,8 @@ public class ChessBoard
    */
   private void fillBoard()
   {
-    for ( int i = 0; i < dimensions; i++ )
-    for ( int j = 0; j < dimensions; j++ )
+    for ( int i = 0; i < rows;    i++ )
+    for ( int j = 0; j < columns; j++ )
     {
       String row    = String.valueOf( Character.toChars( 65 + i ) );
       String column = String.valueOf( j + 1 );
@@ -58,11 +58,8 @@ public class ChessBoard
    */
   private boolean isInvalidIndices( int i, int j )
   {
-    int max = dimensions - 1;
-    return i < 0   ||
-           j < 0   ||
-           i > max ||
-           j > max;
+    return i < 0 || i > rows    - 1 ||
+           j < 0 || j > columns - 1;
   }
   
   /**
@@ -72,5 +69,14 @@ public class ChessBoard
   {
     return ( isInvalidIndices( i, j ) )?
         null : board[i][j];
+  }
+
+  public int getRowCount()
+  {
+    return rows;
+  }
+  public int getColumnCount()
+  {
+    return columns;
   }
 }

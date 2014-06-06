@@ -38,6 +38,7 @@ public class Solution
   public void move( Square a, Square b )
   {
     moves.push( new Move( getStep(), a, b ) );
+//    System.out.println( "move: "+ moves.peek().toString() );
     b.markAsVisited();
   }
   
@@ -53,6 +54,7 @@ public class Solution
       return null;
     }
     Move prev = moves.pop();
+//    System.out.println( "undo: "+ prev.toString() );
     prev.getTo().remarkAsUnvisited();
     return prev.getFrom();
   }
