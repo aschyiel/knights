@@ -16,7 +16,7 @@ public class KnightsTour
   /**
    * Flag to enable annoying debugging messages.
    */
-  public static final boolean DEBUG = false;
+  public static final boolean DEBUG = true;
   
   public KnightsTour()
   {
@@ -24,11 +24,14 @@ public class KnightsTour
   }
   public KnightsTour( int m, int n )
   { 
-    attempted = new HashMap<String, Map<String, Boolean>>();
-    board = makeChessBoardGraph( m, n );
+    attempted = new HashMap<Integer, Map<String, Map<String, Boolean>>>();
+    board = new ChessBoard( m, n );
   }
 
-  protected Map<String, Map<String, Boolean>> attempted; 
+  /**
+   * Depth, by parent square, to attempted child square.
+   */
+  protected Map<Integer, Map<String, Map<String, Boolean>>> attempted;
 
   /**
    * Attempt to tour from the origin to the destination within a section.
@@ -42,38 +45,35 @@ public class KnightsTour
   { 
     int m = section.getRowCount();
     int n = section.getColumnCount();
-    Solution soln = new Solution( m, n );
-    
-//    int maxTries = m * n * 3;
-    int maxTries = 199;
-    int attempts = 0;
+    Solution soln = new Solution( m, n ); 
     Square current = origin;
     current.markAsOrigin();
-    while ( soln.getStep() < soln.getMaxMoves() )
+    while ( true )
     { 
-      if ( attempts++ > maxTries )
-      {
-        System.out.println( "WARNING:Too many attempts, "+
-            "we're probably doing it wrong." );
-        break;
-      }
-      
+      int step = soln.getStep(); 
       Square prev = null; 
       Square[] unvisited = current.getUnvisitedNeighbors(); 
-      boolean exausted = hasExausted( current, unvisited );
-      Square next = ( exausted )? null : getRandomUnvisitedNeighbor( current, unvisited ); 
+      boolean exausted = hasExausted( step, current, unvisited );
+      
+      if ( exausted && current == origin )
+      {
+        System.out.println( "WARNING:Failed to find a solution from "+ origin + " to " + destination );
+        return null;
+      }
+      
+      Square next = ( exausted )? null : getRandomUnvisitedNeighbor( step, current, unvisited ); 
 
-      boolean isLastMove = soln.getStep() + 2 == soln.getMaxMoves();
+      boolean isLastMove = step + 2 == soln.getMaxMoves();
       if ( null != next )
       {
         if ( !isLastMove && next == destination )
         {
-          attempt( current, next );
+          tag( step, current, next );
           continue;
         } 
         if ( next.isDeadEnd() )
         {
-          attempt( current, next );
+          tag( step, current, next );
           continue;
         }
       } 
@@ -82,10 +82,9 @@ public class KnightsTour
       {
         // We ran out of stuff to try at this level.
         debug( "Exausted:"+ current.toString() ); 
-//        resetAttempts( current );
         prev = soln.undo(); 
       }
-      else if ( null != next && !hasTried( current, next ) )
+      else if ( null != next && !hasTried( step, current, next ) )
       { 
         soln.move( current, next ); 
         if ( isLastMove && next.neighborsWith( destination ) )
@@ -93,7 +92,7 @@ public class KnightsTour
           soln.move( next, destination );
           break;    // We found a solution.
         } 
-        attempt( current, next ); 
+        tag( step, current, next ); 
         if ( next.hasOrphanedNeighbors() )
         {
           prev = soln.undo();
@@ -112,7 +111,7 @@ public class KnightsTour
       
       if ( null != prev )
       {
-        attempt( prev, current );
+        tag( step, prev, current );
         current = prev;
       }
     } 
@@ -124,11 +123,11 @@ public class KnightsTour
   /**
    * Returns true if we've tried everything from the given square already.
    */
-  private boolean hasExausted( Square sq, Square[] unvisited )
+  private boolean hasExausted( int depth, Square sq, Square[] unvisited )
   {
     for ( int i = 0; i < unvisited.length; i++ )
     {
-      if ( !hasTried( sq, unvisited[i] ) )
+      if ( !hasTried( depth, sq, unvisited[i] ) )
       {
         return false;
       }
@@ -139,14 +138,14 @@ public class KnightsTour
   /**
    * Returns a random unvisited neighbor. 
    */
-  private Square getRandomUnvisitedNeighbor( Square src, Square[] unvisited )
+  private Square getRandomUnvisitedNeighbor( int depth, Square src, Square[] unvisited )
   {
     if ( unvisited.length < 1 )
     {
       return null;
     }
     Square them = unvisited[ random( unvisited.length ) ]; 
-    while ( hasTried( src, them ) )
+    while ( hasTried( depth, src, them ) )
     {
       them = unvisited[ random( unvisited.length ) ];
     } 
@@ -156,27 +155,39 @@ public class KnightsTour
   /**
    * Keep track of bad inter-square attempts.
    */
-  private void attempt( Square a, Square b )
+  private void tag( int depth, Square a, Square b )
   {
-    attempted.get( a.toString() ).put( b.toString(), true );
+    String k1 = a.toString();
+    String k2 = b.toString();
+    if ( null == attempted.get( depth ) )
+    {
+      attempted.put( depth, new HashMap<String, Map<String, Boolean>>() );
+    }
+    if ( null == attempted.get( depth ).get( k1 ) )
+    { 
+      attempted.get( depth ).put( k1, new HashMap<String, Boolean>() );
+    }
+    attempted.get( depth ).get( k1 ).put( k2, true );
   }
   
   /**
    * Returns true if we're already attempted something previously.
    */
-  private boolean hasTried( Square a, Square b )
+  private boolean hasTried( int depth, Square a, Square b )
   {
-    Boolean yesh = attempted.get( a.toString() ).get( b.toString() );
-    return ( null == yesh )? false : yesh;
-  }
-  
-  /**
-   * Clear-out the attempted failures from the given square.
-   */
-  private void resetAttempts( Square sq )
-  {
-    attempted.put( sq.toString(), new HashMap<String, Boolean>() );
-  }
+    Map<String, Map<String, Boolean>> xi = attempted.get( depth );
+    String k1 = a.toString();
+    String k2 = b.toString();
+    if ( null == xi )
+    {
+      return false;
+    }
+    Map<String, Boolean> zi = xi.get( k1 );
+    Boolean yesh = ( null == zi || !zi.containsKey( k2 ) )?
+        false : zi.get( k2 );
+    return ( null == yesh )?
+        false : yesh;
+  } 
   
   private Random r = new Random();
   
@@ -187,23 +198,6 @@ public class KnightsTour
   { 
     return r.nextInt( n  );
   }
-  
-  /**
-   * Builds up a chess-board (vertices, but NOT edges) for the knight's tour.
-   * 
-   * @see ChessBoardSection#setupEdgesWithinSection
-   */
-  protected ChessBoard makeChessBoardGraph( int m, int n )
-  {
-    ChessBoard board = new ChessBoard( m, n ); 
-    for ( int i = 0; i < m; i++ )
-    for ( int j = 0; j < n; j++ )
-    {
-      Square sq = board.getSquare( i, j );
-      resetAttempts( sq );
-    } 
-    return board;
-  } 
   
   public static void debug( String msg )
   {
