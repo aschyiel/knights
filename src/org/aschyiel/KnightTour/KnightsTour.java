@@ -22,27 +22,25 @@ public class KnightsTour
     attempted = new HashMap<String, Map<String, Boolean>>();
     board = makeChessBoardGraph( m, n );
   }
-  
-  protected Map<String, Map<String, Boolean>> attempted;
-  
+
+  protected Map<String, Map<String, Boolean>> attempted; 
+
   /**
-  * Solves the default knight's tour randomly.
-  */
-  public Solution solve()
-  {
-    return solve( board.getSquare( 0, 0 ) );    // Default to something.
-  }
-  public Solution solve( Square origin )
-  {
-    Solution soln = new Solution( board.getRowCount() * board.getColumnCount() );
+   * Attempt to tour from the origin to the destination.
+   * 
+   * If the origin and destination squares are different,
+   * it is considered an "open" tour, otherwise it's "closed".
+   */
+  public Solution solve( Square origin, Square destination, ChessBoardSection section )
+  { 
+    Solution soln = new Solution( section.getRowCount() * section.getColumnCount() );
     
-    int maxTries = 999999;
+    int maxTries = 999;
     int attempts = 0;
     Square current = origin;
     current.markAsOrigin();
     while ( soln.getStep() < soln.getMaxMoves() )
-    { 
-      boolean isSecondToLastMove = soln.getStep() == soln.getMaxMoves() - 1; 
+    {
       
       if ( attempts++ > maxTries )
       {
@@ -74,12 +72,7 @@ public class KnightsTour
       { 
         soln.move( current, next ); 
         attempt( current, next ); 
-        if ( isSecondToLastMove && next.isValidLastMove() )
-        {
-          soln.move( next, origin );
-          break;    // And there's your closed-tour.  Good night, folks.
-        }
-        else if ( next.hasOrphanedNeighbors() )
+        if ( next.hasOrphanedNeighbors() )
         {
           prev = soln.undo();
         }
@@ -168,31 +161,19 @@ public class KnightsTour
   }
   
   /**
-   * Builds up a chess-board for the knight's tour.
+   * Builds up a chess-board (vertices, but NOT edges) for the knight's tour.
+   * 
+   * @see ChessBoardSection#setupEdgesWithinSection
    */
   protected ChessBoard makeChessBoardGraph( int m, int n )
   {
-    ChessBoard board = new ChessBoard( m, n );
-    
-    //
-    // Setup edges between vertices as a knight.
-    //
-    
+    ChessBoard board = new ChessBoard( m, n ); 
     for ( int i = 0; i < m; i++ )
     for ( int j = 0; j < n; j++ )
     {
       Square sq = board.getSquare( i, j );
-      board.makeEdge( sq, i - 2, j - 1 );
-      board.makeEdge( sq, i - 1, j - 2 );
-      board.makeEdge( sq, i + 1, j - 2 );
-      board.makeEdge( sq, i + 2, j - 1 );
-      board.makeEdge( sq, i + 2, j + 1 );
-      board.makeEdge( sq, i + 1, j + 2 );
-      board.makeEdge( sq, i - 1, j + 2 );
-      board.makeEdge( sq, i - 2, j + 1 ); 
       resetAttempts( sq );
-    }
-    
+    } 
     return board;
   } 
 }
