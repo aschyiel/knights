@@ -16,7 +16,7 @@ public class KnightsTour
   /**
    * Flag to enable annoying debugging messages.
    */
-  public static final boolean DEBUG = true;
+  public static final boolean DEBUG = false;
   
   public KnightsTour()
   {
@@ -117,7 +117,6 @@ public class KnightsTour
       }
     } 
     
-    soln.print();
     return soln;
   }
   

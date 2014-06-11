@@ -24,40 +24,69 @@ public class KnightsTourTest
   {
   }
 
-  //@Test
+  /**
+   *      1     2     3     4     5     6
+   * A [ 34 ][  3 ][ 12 ][ 15 ][ 28 ][  1 ]
+   * B [ 13 ][ 22 ][ 35 ][  2 ][ 11 ][ 16 ]
+   * C [  4 ][ 33 ][ 14 ][ 29 ][ 36 ][ 27 ]
+   * D [ 21 ][ 30 ][ 23 ][  8 ][ 17 ][ 10 ]
+   * E [ 24 ][  5 ][ 32 ][ 19 ][ 26 ][  7 ]
+   * F [ 31 ][ 20 ][ 25 ][  6 ][  9 ][ 18 ]
+   * 
+   * @see http://delphiforfun.org/Programs/images/KnightsTour6x6.gif
+   */
+  @Test
   public void testSolve6x6()
   { 
-    Solution soln = solveProblemSection( 6, 6, 0, 0, 2, 1, "A1", "C2" );
+    Solution soln = solveSection( 6, 6, 0, 5, 2, 4, "A6", "C5" );
     assertTrue( soln != null );
+soln.print();
   }
 
-//  @Test
-  public void testSolve5x4()
+  /**
+   * ie. 5x4 solution
+   * 
+   *      1     2     3     4     5
+   * A [  1 ][ 20 ][  5 ][ 14 ][  9 ]
+   * B [  6 ][ 15 ][ 10 ][ 19 ][  4 ]
+   * C [ 11 ][  2 ][ 17 ][  8 ][ 13 ]
+   * D [ 16 ][  7 ][ 12 ][  3 ][ 18 ]
+   * 
+   * ie2.
+   *      1     2     3     4     5
+   * A [  1 ][ 20 ][  7 ][ 16 ][  3 ]
+   * B [  6 ][ 15 ][  2 ][ 11 ][  8 ]
+   * C [ 19 ][ 10 ][ 13 ][  4 ][ 17 ]
+   * D [ 14 ][  5 ][ 18 ][  9 ][ 12 ]
+   */
+  @Test
+  public void testSolve4x5()
   { 
-    Solution soln = solveProblemSection( 5, 4, 0, 0, 0, 1, "A1", "A2" );
+    Solution soln = solveSection( 4, 5, 0, 0, 0, 1, "A1", "A2" );
     assertTrue( soln != null );
   } 
 
   /**
-   * Here's a known solution for a 3x4 section.
+   * Here's a quick (only) solution for a 3x4 section from A1 to A2.
    * 
-   * [  1 ][ 12 ][  3 ]
-   * [  4 ][  9 ][  6 ]
-   * [  7 ][  2 ][ 11 ]
-   * [ 10 ][  5 ][  8 ]
+   *      1     2     3
+   * A [  1 ][ 12 ][  3 ]
+   * B [  4 ][  9 ][  6 ]
+   * C [  7 ][  2 ][ 11 ]
+   * D [ 10 ][  5 ][  8 ]
    */
   @Test
-  public void testSolveSimple4x3Section()
+  public void testSolveSimple3x4Section()
   {
-    Solution soln = solveProblemSection( 4, 3, 0, 0, 0, 1, "A1", "A2" );
+    Solution soln = solveSection( 4, 3, 0, 0, 0, 1, "A1", "A2" );
     assertTrue( soln != null );
   }
-  
-//  @Test
-  public void testSolveImpossible4x3Section()
+
+  @Test
+  public void testSolveImpossible3x4Section()
   {
     // GOTCHA: There is NO closed path in a 4x3. 
-    Solution soln = solveProblemSection( 4, 3, 0, 0, 0, 0, "A1", "A1" );
+    Solution soln = solveSection( 4, 3, 0, 0, 0, 0, "A1", "A1" );
     assertTrue( null == soln );    // An impossible answer for an impossible solution.
   }
   
@@ -169,7 +198,7 @@ public class KnightsTourTest
    * A sub-routine for solving an arbitrary board (section) size from a to b.
    * @return
    */
-  private Solution solveProblemSection( int m,           int n,
+  private Solution solveSection( int m,           int n,
                                         int srcX,        int srcY,
                                         int dstX,        int dstY,
                                         String srcLabel, String dstLabel )
