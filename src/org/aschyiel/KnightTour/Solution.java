@@ -6,9 +6,14 @@ import java.util.Iterator;
 
 public class Solution
 {
-  public Solution( int m, int n )
+  private Integer _columns;
+  private Integer _rows;
+  
+  public Solution( int columns, int rows )
   {
-    maxMoves = m * n;
+    maxMoves = columns * rows;
+    _columns = columns;
+    _rows    = rows;
     moves = new ArrayDeque<Move>( maxMoves );
   }
 
@@ -69,6 +74,82 @@ public class Solution
     {
       System.out.println( it.next() );
     }
+  }
+  
+  /**
+  * Print out our solution as a crude ascii-art matrix.
+  *
+  * ie
+  *      1     2     3     4     5     6
+  * A [ 34 ][  3 ][ 12 ][ 15 ][ 28 ][  1 ]
+  * B [ 13 ][ 22 ][ 35 ][  2 ][ 11 ][ 16 ]
+  * C [  4 ][ 33 ][ 14 ][ 29 ][ 36 ][ 27 ]
+  * D [ 21 ][ 30 ][ 23 ][  8 ][ 17 ][ 10 ]
+  * E [ 24 ][  5 ][ 32 ][ 19 ][ 26 ][  7 ]
+  * F [ 31 ][ 20 ][ 25 ][  6 ][  9 ][ 18 ] 
+  */
+  public void printAsAsciiArt()
+  {
+    Integer m = _columns;
+    Integer n = _rows;
+    if ( null == m || null == n ) {
+      return;
+    } 
+    
+    //
+    // Collect our moves-list as a matrix.
+    //
+    
+    int[][] tmp = new int[n][m]; 
+    Iterator<Move> it = moves.descendingIterator();
+    Move move = null;
+    Square sq = null;
+    while ( it.hasNext() )
+    {
+      move = it.next();
+      sq = move.getFrom();
+      tmp[ sq.getRowIndex() ][ sq.getColumnIndex() ] = move.getStep();
+    }
+    sq = move.getTo();    //..finishing-move..
+    tmp[ sq.getRowIndex() ][ sq.getColumnIndex() ] = move.getStep() + 1;
+
+    //
+    // Print column-labels.
+    //
+    
+    StringBuilder sb = new StringBuilder();
+    sb.append( "   " );
+    for ( int i = 1; i < m + 1; i++ )
+    {
+      sb.append( "   " );
+      sb.append( i );
+      sb.append( "  " );
+    }
+    System.out.println( sb.toString() );
+    sb.delete( 0, sb.length() );
+    
+    //
+    // Print each row.
+    //
+    
+    for ( int i = 0; i < n; i++ )
+    {
+      sb.append( " " );
+      sb.append( Character.toChars( 65 + i ) );
+      sb.append( " " );
+      for ( int j = 0; j < m; j++ )
+      {
+        sb.append( "[ " );
+        if ( 10 > tmp[i][j] )
+        {
+          sb.append( " " );
+        }
+        sb.append( tmp[i][j] );
+        sb.append( " ]" );
+      }
+      System.out.println( sb.toString() );
+      sb.delete( 0, sb.length() );
+    } 
   }
   
 }

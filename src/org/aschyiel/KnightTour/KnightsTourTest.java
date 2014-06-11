@@ -25,6 +25,18 @@ public class KnightsTourTest
   }
 
   /**
+   * @see http://homepage.eircom.net/~reidr1/Knights-Tour_files/image006.jpg
+   */
+//  @Test
+  public void testSolve8x8()
+  { 
+    Solution soln = solveSection( 8, 8, 0, 5, 2, 4, "A6", "C5" );
+    assertTrue( soln != null );
+soln.printAsAsciiArt();
+  }
+
+
+  /**
    * for example:
    * 
    *      1     2     3     4     5     6
@@ -35,14 +47,33 @@ public class KnightsTourTest
    * E [ 24 ][  5 ][ 32 ][ 19 ][ 26 ][  7 ]
    * F [ 31 ][ 20 ][ 25 ][  6 ][  9 ][ 18 ]
    * 
+   * alternative example:
+   *      1     2     3     4     5     6  
+   * A [ 26 ][ 31 ][ 28 ][ 19 ][ 24 ][  1 ]
+   * B [ 29 ][ 18 ][ 25 ][  2 ][ 11 ][ 20 ]
+   * C [ 32 ][ 27 ][ 30 ][ 21 ][ 36 ][ 23 ]
+   * D [ 17 ][  6 ][ 15 ][ 12 ][  3 ][ 10 ]
+   * E [ 14 ][ 33 ][  8 ][  5 ][ 22 ][ 35 ]
+   * F [  7 ][ 16 ][ 13 ][ 34 ][  9 ][  4 ]
+   * 
+   * ie3.
+   *      1     2     3     4     5     6  
+   * A [ 18 ][ 31 ][ 28 ][  9 ][ 20 ][  1 ]
+   * B [ 27 ][ 10 ][ 19 ][  2 ][ 29 ][  8 ]
+   * C [ 32 ][ 17 ][ 30 ][  7 ][ 36 ][ 21 ]
+   * D [ 11 ][ 26 ][ 13 ][ 22 ][  3 ][  6 ]
+   * E [ 16 ][ 33 ][ 24 ][  5 ][ 14 ][ 35 ]
+   * F [ 25 ][ 12 ][ 15 ][ 34 ][ 23 ][  4 ]
+   * 
    * @see http://delphiforfun.org/Programs/images/KnightsTour6x6.gif
    */
   @Test
   public void testSolve6x6()
   { 
+    // GOTCHA: This test can take up to a minute or so to run if unlucky.
     Solution soln = solveSection( 6, 6, 0, 5, 2, 4, "A6", "C5" );
     assertTrue( soln != null );
-soln.print();
+    soln.printAsAsciiArt();
   }
 
   /**

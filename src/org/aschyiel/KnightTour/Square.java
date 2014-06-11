@@ -11,12 +11,25 @@ public class Square
 {
   private String name;
   
+  /**
+   * The zero-based matrix indices.
+   */
+  private Integer _column;
+  private Integer _row;
+  
   private List<Square> neighbors;
   
   public Square( String name )
   {
     this.name = name;
     neighbors = new ArrayList<Square>();
+  }
+
+  public Square( String name, int row, int column )
+  {
+    this( name );
+    _row    = row;
+    _column = column;
   }
   
   @Override
@@ -164,5 +177,15 @@ public class Square
       }
     }
     return false;
+  }
+
+  public Integer getRowIndex()
+  {
+    return _row;
+  }
+
+  public Integer getColumnIndex()
+  {
+    return _column;
   }
 }

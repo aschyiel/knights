@@ -33,7 +33,7 @@ public class ChessBoard
     {
       String row    = String.valueOf( Character.toChars( 65 + i ) );
       String column = String.valueOf( j + 1 );
-      board[i][j] = new Square( row + column );
+      board[i][j] = new Square( row + column, i, j );
     }
   }
   
