@@ -47,7 +47,7 @@ public class Solution
    * 
    * Safely ignores invalid undos.
    */
-  public Square undo()
+  public Move undo()
   {
     if ( moves.size() < 1 )
     {
@@ -56,7 +56,7 @@ public class Solution
     Move prev = moves.pop();
     KnightsTour.debug( "undo: "+ prev.toString() );
     prev.getTo().remarkAsUnvisited();
-    return prev.getFrom();
+    return prev;
   }
   
   /**

@@ -23,7 +23,21 @@ public class KnightsTourTest
   public void tearDown() throws Exception
   {
   }
-  
+
+  //@Test
+  public void testSolve6x6()
+  { 
+    Solution soln = solveProblemSection( 6, 6, 0, 0, 2, 1, "A1", "C2" );
+    assertTrue( soln != null );
+  }
+
+//  @Test
+  public void testSolve5x4()
+  { 
+    Solution soln = solveProblemSection( 5, 4, 0, 0, 0, 1, "A1", "A2" );
+    assertTrue( soln != null );
+  } 
+
   /**
    * Here's a known solution for a 3x4 section.
    * 
@@ -33,35 +47,17 @@ public class KnightsTourTest
    * [ 10 ][  5 ][  8 ]
    */
   @Test
-  public void testSolveBasic3x4Section()
+  public void testSolveSimple4x3Section()
   {
-    int m = 4;
-    int n = 3;
-    KnightsTour caty = new KnightsTour( m, n );
-    ChessBoardSection section = new ChessBoardSection(
-        caty.board, 0, 0, m, n ); 
-    Square src = section.getSquare( 0, 0 );
-    Square dst = section.getSquare( 0, 1 );
-    assertEquals( "A1", src.toString() );
-    assertEquals( "A2", dst.toString() );
-    Solution soln = caty.solveSection( src, dst, section );
+    Solution soln = solveProblemSection( 4, 3, 0, 0, 0, 1, "A1", "A2" );
     assertTrue( soln != null );
   }
   
-  @Test
-  public void testSolveBasic3x4SectionGoneBad()
+//  @Test
+  public void testSolveImpossible4x3Section()
   {
-    // GOTCHA: There is NO closed path in a 4x3.
-    int m = 4;
-    int n = 3;
-    KnightsTour caty = new KnightsTour( m, n );
-    ChessBoardSection section = new ChessBoardSection(
-        caty.board, 0, 0, m, n ); 
-    Square src = section.getSquare( 0, 0 );
-    Square dst = section.getSquare( 0, 0 );
-    assertEquals( "A1", src.toString() );
-    assertEquals( "A1", dst.toString() );
-    Solution soln = caty.solveSection( src, dst, section );
+    // GOTCHA: There is NO closed path in a 4x3. 
+    Solution soln = solveProblemSection( 4, 3, 0, 0, 0, 0, "A1", "A1" );
     assertTrue( null == soln );    // An impossible answer for an impossible solution.
   }
   
@@ -168,5 +164,24 @@ public class KnightsTourTest
     assertEquals( 6, innerBorder.edgeCount() );
     assertEquals( 8, center     .edgeCount() );
   }
-  
+
+  /**
+   * A sub-routine for solving an arbitrary board (section) size from a to b.
+   * @return
+   */
+  private Solution solveProblemSection( int m,           int n,
+                                        int srcX,        int srcY,
+                                        int dstX,        int dstY,
+                                        String srcLabel, String dstLabel )
+  {
+    KnightsTour caty = new KnightsTour( m, n );
+    ChessBoardSection section = new ChessBoardSection(
+        caty.board, 0, 0, m, n ); 
+    Square src = section.getSquare( srcX, srcY );
+    Square dst = section.getSquare( dstX, dstY );
+    assertEquals( srcLabel, src.toString() );
+    assertEquals( dstLabel, dst.toString() );
+    return caty.solveSection( src, dst, section );
+  }
+ 
 }

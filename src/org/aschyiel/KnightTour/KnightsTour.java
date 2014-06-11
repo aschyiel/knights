@@ -46,24 +46,25 @@ public class KnightsTour
     int m = section.getRowCount();
     int n = section.getColumnCount();
     Solution soln = new Solution( m, n ); 
+    int maxSteps = soln.getMaxMoves();
     Square current = origin;
     current.markAsOrigin();
     while ( true )
     { 
       int step = soln.getStep(); 
-      Square prev = null; 
+      Move prev = null; 
       Square[] unvisited = current.getUnvisitedNeighbors(); 
-      boolean exausted = hasExausted( step, current, unvisited );
+      boolean exhausted = hasExhausted( step, current, unvisited );
       
-      if ( exausted && current == origin )
+      if ( exhausted && current == origin )
       {
         System.out.println( "WARNING:Failed to find a solution from "+ origin + " to " + destination );
         return null;
       }
       
-      Square next = ( exausted )? null : getRandomUnvisitedNeighbor( step, current, unvisited ); 
+      Square next = ( exhausted )? null : getRandomUnvisitedNeighbor( step, current, unvisited ); 
 
-      boolean isLastMove = step + 2 == soln.getMaxMoves();
+      boolean isLastMove = step + 2 == maxSteps;
       if ( null != next )
       {
         if ( !isLastMove && next == destination )
@@ -78,10 +79,11 @@ public class KnightsTour
         }
       } 
       
-      if ( exausted )
+      if ( exhausted )
       {
         // We ran out of stuff to try at this level.
         debug( "Exausted:"+ current.toString() ); 
+        unexhaustSubSteps( step, maxSteps );
         prev = soln.undo(); 
       }
       else if ( null != next && !hasTried( step, current, next ) )
@@ -92,7 +94,6 @@ public class KnightsTour
           soln.move( next, destination );
           break;    // We found a solution.
         } 
-        tag( step, current, next ); 
         if ( next.hasOrphanedNeighbors() )
         {
           prev = soln.undo();
@@ -111,8 +112,8 @@ public class KnightsTour
       
       if ( null != prev )
       {
-        tag( step, prev, current );
-        current = prev;
+        tag( prev.getStep(), prev.getFrom(), prev.getTo() ); 
+        current = prev.getFrom();
       }
     } 
     
@@ -123,7 +124,7 @@ public class KnightsTour
   /**
    * Returns true if we've tried everything from the given square already.
    */
-  private boolean hasExausted( int depth, Square sq, Square[] unvisited )
+  private boolean hasExhausted( int depth, Square sq, Square[] unvisited )
   {
     for ( int i = 0; i < unvisited.length; i++ )
     {
@@ -134,6 +135,20 @@ public class KnightsTour
     }
     return true;
   }
+
+  /**
+   * Un-tag/free-up attempts; preferably while you're moving "up" in the DFS;
+   * this applies to sections that we're not gonna retry again
+   * because we've exhausted them at a higher-level.
+   */
+  private void unexhaustSubSteps( int depth, int max )
+  {
+    for ( ; depth < max + 1; depth++ )
+    {
+      attempted.put( depth, null );
+    }
+  }
+
   
   /**
    * Returns a random unvisited neighbor. 
@@ -151,9 +166,9 @@ public class KnightsTour
     } 
     return them;
   } 
-  
+
   /**
-   * Keep track of bad inter-square attempts.
+   * Keep track of bad inter-square attempts during DFS.
    */
   private void tag( int depth, Square a, Square b )
   {
@@ -169,7 +184,7 @@ public class KnightsTour
     }
     attempted.get( depth ).get( k1 ).put( k2, true );
   }
-  
+ 
   /**
    * Returns true if we're already attempted something previously.
    */

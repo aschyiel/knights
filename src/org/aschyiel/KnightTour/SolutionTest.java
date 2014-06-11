@@ -41,8 +41,8 @@ public class SolutionTest
   {
     subject.move( a, b );
     subject.move( b, c );
-    assertTrue( b == subject.undo() );
-    assertTrue( a == subject.undo() ); 
+    assertTrue( b == subject.undo().getFrom() );
+    assertTrue( a == subject.undo().getFrom() ); 
     assertTrue( 1 == subject.getStep() );
   }
   

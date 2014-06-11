@@ -35,4 +35,9 @@ public final class Move
   {
     return to;
   }
+  
+  public Integer getStep()
+  {
+    return step;
+  }
 }
