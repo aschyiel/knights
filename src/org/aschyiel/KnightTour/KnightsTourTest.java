@@ -25,6 +25,8 @@ public class KnightsTourTest
   }
 
   /**
+   * for example:
+   * 
    *      1     2     3     4     5     6
    * A [ 34 ][  3 ][ 12 ][ 15 ][ 28 ][  1 ]
    * B [ 13 ][ 22 ][ 35 ][  2 ][ 11 ][ 16 ]
